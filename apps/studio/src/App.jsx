@@ -61,14 +61,14 @@ export default function App() {
     <div className="studio-shell">
       <header className="studio-header">
         <div className="studio-header__brand">Daniel Brown <span>/ Design Studio</span></div>
-        <div className="studio-header__meta">Catalogue · playground · accepted baselines</div>
+        <div className="studio-header__meta">Catalogue · accepted revisions · deliberate explorations</div>
       </header>
 
       <main>
         <section className="hero">
           <p className="eyebrow">Product design studio</p>
-          <h1>Projects, coded explorations and the decisions between them.</h1>
-          <p className="lede">The catalogue preserves project context and accepted directions. The playground layer links to live prototypes wherever they are deployed, without coupling the Studio to V0, Cursor, Codex or any other coding tool.</p>
+          <h1>Accepted experiences, careful revisions and deliberate alternatives.</h1>
+          <p className="lede">Sequential iteration is the default: each candidate builds from one accepted baseline. When a question genuinely needs alternatives, an exploration set branches from a named accepted revision without replacing it.</p>
         </section>
 
         <section className="registry-section">
