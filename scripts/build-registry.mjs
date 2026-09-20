@@ -16,6 +16,26 @@ function fail(file, message) {
   throw new Error(`${path.relative(root, file)}: ${message}`);
 }
 
+function validDeploymentUrl(url) {
+  return typeof url === "string" && (url.startsWith("/") || /^https?:\/\//.test(url));
+}
+
+function assertNoRevisionCycles(project, file, revisionsById) {
+  for (const revision of project.revisions) {
+    const seen = new Set();
+    let cursor = revision;
+    while (cursor?.previousRevisionId) {
+      if (seen.has(cursor.id)) fail(file, `revision chain contains a cycle at "${cursor.id}"`);
+      seen.add(cursor.id);
+      const previous = revisionsById.get(cursor.previousRevisionId);
+      if (!previous) {
+        fail(file, `revision "${cursor.id}" references missing previousRevisionId "${cursor.previousRevisionId}"`);
+      }
+      cursor = previous;
+    }
+  }
+}
+
 function validateProject(project, file) {
   if (!validate(project)) {
     const detail = validate.errors
@@ -29,29 +49,85 @@ function validateProject(project, file) {
     fail(file, `slug "${project.slug}" must match filename "${filenameSlug}.json"`);
   }
 
-  const versionIds = project.versions.map((version) => version.id);
-  if (new Set(versionIds).size !== versionIds.length) {
-    fail(file, "version ids must be unique");
+  const revisionIds = project.revisions.map((revision) => revision.id);
+  if (new Set(revisionIds).size !== revisionIds.length) {
+    fail(file, "revision ids must be unique");
   }
 
-  if (!versionIds.includes(project.currentVersion)) {
-    fail(file, `currentVersion "${project.currentVersion}" does not reference a version id`);
+  const revisionsById = new Map(project.revisions.map((revision) => [revision.id, revision]));
+  const currentRevisions = project.revisions.filter((revision) => revision.status === "current");
+  if (currentRevisions.length !== 1) {
+    fail(file, `exactly one revision must have status current; found ${currentRevisions.length}`);
   }
 
-  const currentVersions = project.versions.filter((version) => version.status === "Current");
-  if (currentVersions.length !== 1) {
-    fail(file, `exactly one version must have status Current; found ${currentVersions.length}`);
+  if (!revisionsById.has(project.currentRevision)) {
+    fail(file, `currentRevision "${project.currentRevision}" does not reference a revision id`);
   }
 
-  if (currentVersions[0].id !== project.currentVersion) {
-    fail(file, `currentVersion must reference the version whose status is Current`);
+  if (currentRevisions[0].id !== project.currentRevision) {
+    fail(file, "currentRevision must reference the revision whose status is current");
   }
 
-  for (const version of project.versions) {
-    const url = version.deploymentUrl;
-    if (!(url.startsWith("/") || /^https?:\/\//.test(url))) {
-      fail(file, `version "${version.id}" deploymentUrl must be an internal route or http(s) URL`);
+  const candidates = project.revisions.filter((revision) => revision.status === "candidate");
+  if (candidates.length > 1) {
+    fail(file, `at most one candidate revision is supported initially; found ${candidates.length}`);
+  }
+  if (candidates.length === 1 && candidates[0].previousRevisionId !== project.currentRevision) {
+    fail(file, `candidate revision "${candidates[0].id}" must build from currentRevision "${project.currentRevision}"`);
+  }
+
+  for (const revision of project.revisions) {
+    if (!validDeploymentUrl(revision.deploymentUrl)) {
+      fail(file, `revision "${revision.id}" deploymentUrl must be an internal route or http(s) URL`);
     }
+    if (revision.previousRevisionId === revision.id) {
+      fail(file, `revision "${revision.id}" cannot reference itself as previousRevisionId`);
+    }
+    if (["current", "superseded"].includes(revision.status) && !revision.dateAccepted) {
+      fail(file, `accepted revision "${revision.id}" must record dateAccepted`);
+    }
+  }
+
+  assertNoRevisionCycles(project, file, revisionsById);
+
+  const explorationIds = project.explorationSets.map((set) => set.id);
+  if (new Set(explorationIds).size !== explorationIds.length) {
+    fail(file, "exploration set ids must be unique");
+  }
+
+  const explorationById = new Map(project.explorationSets.map((set) => [set.id, set]));
+  for (const set of project.explorationSets) {
+    const baseline = revisionsById.get(set.baselineRevisionId);
+    if (!baseline) {
+      fail(file, `exploration set "${set.id}" references missing baselineRevisionId "${set.baselineRevisionId}"`);
+    }
+    if (!["current", "superseded"].includes(baseline.status)) {
+      fail(file, `exploration set "${set.id}" must branch from an accepted current or superseded revision`);
+    }
+
+    const alternativeIds = set.alternatives.map((alternative) => alternative.id);
+    if (new Set(alternativeIds).size !== alternativeIds.length) {
+      fail(file, `exploration set "${set.id}" alternative ids must be unique`);
+    }
+
+    for (const alternative of set.alternatives) {
+      if (!validDeploymentUrl(alternative.deploymentUrl)) {
+        fail(file, `exploration "${set.id}" alternative "${alternative.id}" has an invalid deploymentUrl`);
+      }
+    }
+
+    if (set.selectedAlternativeId) {
+      if (!alternativeIds.includes(set.selectedAlternativeId)) {
+        fail(file, `exploration set "${set.id}" selectedAlternativeId does not reference an alternative`);
+      }
+      if (!set.selectionRationale) {
+        fail(file, `exploration set "${set.id}" must record selectionRationale when an alternative is selected`);
+      }
+    }
+  }
+
+  if (project.workingMode.type === "exploration" && !explorationById.has(project.workingMode.explorationSetId)) {
+    fail(file, `workingMode references missing exploration set "${project.workingMode.explorationSetId}"`);
   }
 }
 
