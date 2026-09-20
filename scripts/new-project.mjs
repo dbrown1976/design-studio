@@ -26,27 +26,39 @@ const project = {
   description: "Describe the project and why it matters.",
   status: "exploring",
   updated: today,
-  currentVersion: "baseline",
+  currentRevision: "v1-baseline",
   tags: [],
   reviewQuestions: [],
-  versions: [
+  revisions: [
     {
-      id: "baseline",
-      name: "Baseline",
-      status: "Current",
-      whatChanged: "Initial accepted baseline.",
-      question: "What should this first coded baseline help us understand?",
-      decisionRationale: "This is the accepted starting point until a candidate is deliberately promoted.",
-      deploymentUrl: `/playground/${slug}`
+      id: "v1-baseline",
+      name: "v1 · Baseline",
+      previousRevisionId: null,
+      status: "current",
+      summary: "Initial accepted baseline.",
+      scope: "Describe what this accepted revision establishes.",
+      preserve: [],
+      deploymentUrl: `/playground/${slug}`,
+      validationStatus: "passed",
+      acceptanceChecks: [],
+      dateAccepted: today
     }
   ],
+  explorationSets: [],
+  workingMode: {
+    type: "sequential",
+    requestedAmendment: "Describe the next requested amendment.",
+    mayChange: [],
+    mustRemainUnchanged: [],
+    acceptanceChecks: []
+  },
   decisionLog: [],
   context: {
     problem: "Describe the problem.",
     intendedOutcome: "Describe the intended outcome.",
     users: ["Describe the primary user."],
     workflow: "Describe the relevant workflow.",
-    currentDirection: "Describe the current design direction.",
+    currentDirection: "Describe the current accepted design direction.",
     constraints: [],
     acceptedDecisions: [],
     openQuestions: []
