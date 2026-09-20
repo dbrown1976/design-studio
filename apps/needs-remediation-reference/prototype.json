@@ -1,0 +1,22 @@
+{
+  "slug": "needs-remediation-reference",
+  "title": "Needs Remediation",
+  "description": "Reference prototype preserving the original POC's baseline → exploration → HiFi model for a filter-header redesign.",
+  "question": "How might a saved operational view explain its fixed definition without presenting that definition as removable filters?",
+  "status": "reference",
+  "fidelity": "hifi",
+  "updated": "2026-09-20",
+  "productionPath": "/needs-remediation-reference",
+  "tags": ["blueprint", "divergence", "handoff"],
+  "principles": ["context/design-principles.md", "context/prototyping-rules.md"],
+  "blueprints": ["blueprints/needs-remediation-list.json"],
+  "handoff": {
+    "dontMiss": [
+      "One stable view name, matching navigation and breadcrumbs.",
+      "The saved view definition is copy, not a set of removable filter chips.",
+      "User-controlled filters narrow within the fixed view definition.",
+      "Existing table behaviour is preserved; the design question is the filter/header model."
+    ],
+    "ignore": ["Alternative explorations that did not converge", "A redesign of the underlying message table"]
+  }
+}

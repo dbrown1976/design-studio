@@ -1,0 +1,13 @@
+{
+  "id": "needs-remediation-list",
+  "source": "production",
+  "title": "Needs Remediation — production list view",
+  "capturedFrom": "app.sublime.security/needs-remediation",
+  "notes": "Snapshot of the actual production view, kept in the playground as a trusted reference — not a redraw. Frames that build 'from' this blueprint inherit its table structure, row interactions, and bulk actions unless a frame explicitly says otherwise.",
+  "mock": {
+    "component": "MessageTable",
+    "toolbarLabel": "Malicious messages · not remediated · last 7 days",
+    "columns": ["Subject", "Sender", "Received", "Verdict"],
+    "rowCount": 8
+  }
+}

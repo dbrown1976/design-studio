@@ -1,0 +1,22 @@
+{
+  "slug": "ai-campaign-production",
+  "title": "AI Campaign Production",
+  "description": "Integration slot for the current V0 prototype: an AI-assisted campaign workflow coordinating structured content and assets across CMS and DAM.",
+  "question": "How might AI coordinate campaign production while keeping exceptions, status and consequential human decisions visible?",
+  "status": "exploring",
+  "fidelity": "hifi",
+  "updated": "2026-09-20",
+  "productionPath": "/ai-campaign-production",
+  "tags": ["AI workflows", "CMS", "DAM", "human control"],
+  "principles": ["context/design-principles.md", "context/interaction-rules.md"],
+  "blueprints": [],
+  "handoff": {
+    "dontMiss": [
+      "Items requiring attention should be visually prominent and actionable.",
+      "Actions that resolve a blocker should update counts/state and acknowledge success.",
+      "Open-in-CMS and Open-in-DAM actions should use consistent treatment when they play the same workflow role.",
+      "Human checkpoints remain visible around consequential or uncertain automated steps."
+    ],
+    "ignore": ["This placeholder UI: replace it with the existing V0 implementation when the repo is connected."]
+  }
+}

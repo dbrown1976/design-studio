@@ -1,0 +1,17 @@
+{
+  "name": "daniel-design-studio",
+  "private": true,
+  "version": "0.2.0",
+  "type": "module",
+  "workspaces": ["apps/*","packages/*"],
+  "scripts": {
+    "registry": "node scripts/build-registry.mjs",
+    "studio:new": "node scripts/new-prototype.mjs",
+    "dev": "npm run registry && npm run dev --workspace @studio/web",
+    "dev:studio": "npm run registry && npm run dev --workspace @studio/web",
+    "dev:reference": "npm run dev --workspace @studio/needs-remediation-reference",
+    "dev:campaign": "npm run dev --workspace @studio/ai-campaign-production",
+    "build": "npm run registry && npm run build --workspaces --if-present",
+    "build:studio": "npm run registry && npm run build --workspace @studio/web"
+  }
+}
