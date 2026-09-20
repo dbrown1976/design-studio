@@ -1,11 +1,15 @@
 {
   "name": "daniel-design-studio",
   "private": true,
-  "version": "0.2.0",
+  "version": "0.3.0",
   "type": "module",
-  "workspaces": ["apps/*","packages/*"],
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
   "scripts": {
     "registry": "node scripts/build-registry.mjs",
+    "studio:new-project": "node scripts/new-project.mjs",
     "studio:new": "node scripts/new-prototype.mjs",
     "dev": "npm run registry && npm run dev --workspace @studio/web",
     "dev:studio": "npm run registry && npm run dev --workspace @studio/web",
@@ -13,5 +17,8 @@
     "dev:campaign": "npm run dev --workspace @studio/ai-campaign-production",
     "build": "npm run registry && npm run build --workspaces --if-present",
     "build:studio": "npm run registry && npm run build --workspace @studio/web"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1"
   }
 }
