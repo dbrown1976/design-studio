@@ -1,46 +1,58 @@
 # Vercel setup
 
-The repository is prepared for independent Vercel projects from one monorepo.
-GitHub is not required to develop locally, but it is the intended source of
-truth for automatic previews and production deploys.
+The Studio catalogue and prototype deployments are intentionally decoupled.
 
-## Projects to create
+## Design Studio
 
-Create one Vercel project for each deployable app and point its Root Directory at
-the app folder:
+Deploy `apps/studio` as the catalogue application. Its stable project URLs are:
+
+```text
+studio.danielbrown.design/projects/ai-campaign-production
+studio.danielbrown.design/projects/needs-remediation-reference
+```
+
+The existing catch-all rewrite keeps direct visits to `/projects/<slug>`
+working as client-side Studio routes.
+
+## Prototype deployments
+
+Prototype versions do not need to be hosted by the Studio project. A project
+manifest can point its version `deploymentUrl` at:
+
+- a Studio/internal playground route;
+- another Vercel project;
+- a V0 deployment;
+- another http(s) deployment.
+
+This allows a prototype to live in its own GitHub repository and deploy
+independently while the Studio remains the stable catalogue and review entry
+point.
+
+For local prototype apps already inside this monorepo, one Vercel project per app
+is still supported.
 
 | Vercel project | Root Directory |
 | --- | --- |
 | Design Studio | `apps/studio` |
-| AI Campaign Production | `apps/ai-campaign-production` |
+| AI Campaign Production placeholder | `apps/ai-campaign-production` |
 | Needs Remediation reference | `apps/needs-remediation-reference` |
 
-Each app contains its own build configuration. Once connected to GitHub, pushes
-to non-production branches create Preview Deployments and the production branch
-creates Production Deployments.
+The AI Campaign Production project now also records its independent source
+repository. Replace its internal placeholder deployment URL with the real Vercel
+deployment when that repository is deployed.
 
-## Public URL model
+## Preview workflow
 
-The intended public model is:
-
-```text
-studio.danielbrown.design/
-studio.danielbrown.design/ai-campaign-production
-studio.danielbrown.design/needs-remediation-reference
-```
-
-The apps remain independently deployed. After the individual production URLs are
-known, add path rewrites at the Studio/domain routing layer. Do not hard-code
-unknown deployment URLs into the repository.
-
-Until those URLs exist, manifests expose stable `productionPath` values and the
-Studio shows them as the intended destination rather than pretending the routing
-is already configured.
-
-## Normal workflow after GitHub is connected
+A typical connected prototype workflow is:
 
 ```text
-V0 or Codex -> feature branch -> Vercel Preview -> review -> merge -> Production
+accepted baseline
+  → new branch / coded exploration
+  → preview deployment
+  → add Candidate version to project manifest
+  → share stable Studio project page
+  → collect focused feedback
+  → explicitly promote or reject
 ```
 
-No custom GitHub Action is required for the standard flow.
+Do not overwrite the accepted Current deployment merely to create a Candidate.
