@@ -6,7 +6,8 @@ const statusLabel = {
 };
 
 export default function PrototypeCard({ prototype: project, onOpen }) {
-  const current = project.versions.find((version) => version.id === project.currentVersion);
+  const current = project.revisions.find((revision) => revision.id === project.currentRevision);
+  const candidate = project.revisions.find((revision) => revision.status === "candidate");
 
   return (
     <article className="prototype-card">
@@ -18,8 +19,16 @@ export default function PrototypeCard({ prototype: project, onOpen }) {
       <p>{project.description}</p>
       <dl className="prototype-card__meta">
         <div>
-          <dt>Current version</dt>
-          <dd>{current?.name || project.currentVersion}</dd>
+          <dt>Accepted revision</dt>
+          <dd>{current?.name || project.currentRevision}</dd>
+        </div>
+        <div>
+          <dt>Working mode</dt>
+          <dd>{project.workingMode.type === "exploration" ? "Divergent exploration" : "Sequential iteration"}</dd>
+        </div>
+        <div>
+          <dt>Candidate</dt>
+          <dd>{candidate?.name || "None"}</dd>
         </div>
         <div>
           <dt>Project route</dt>
