@@ -1,7 +1,13 @@
 # Needs Remediation reference
 
-This app preserves the original POC as an executable reference for the Studio's
-baseline → exploration → HiFi workflow. Read the root `AGENTS.md` before editing.
-Do not turn it into a generic design-system demo; its purpose is to demonstrate
-how a trusted blueprint can support divergent structural exploration and a
-converged handoff.
+Read the root `AGENTS.md` and the canonical project manifest at:
+
+`projects/needs-remediation-reference.json`
+
+This app preserves the executable baseline → exploration → selected direction
+reference. Existing versions are part of the design record, not disposable
+screens.
+
+Before creating a new exploration:
+
+> Start new exploration work from the accepted baseline, preserve existing versions, restrict changes to the requested area and verify that previously accepted screens have not regressed.
