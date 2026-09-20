@@ -1,58 +1,88 @@
 # Design Studio workflow
 
-The intended loop is:
+The overall loop remains:
 
 ```text
-explore → create coded alternatives → deploy → share → collect feedback → select and refine
+explore → code → deploy → share → collect feedback → select and refine
 ```
 
-## 1. Explore
+How the work is represented depends on whether the design task is sequential or
+divergent.
 
-Start with a project manifest that states the problem, users, workflow, current
-direction, constraints, accepted decisions and open questions.
+## Mode 1: sequential iteration
 
-## 2. Create coded alternatives
-
-Start from the accepted Current version. Create a new version entry with status
-`Candidate`; do not overwrite the Current version.
-
-A prototype can use internal playground routes such as:
+This is the default.
 
 ```text
-/playground/campaign-list
-/playground/campaign-list/v2
+Accepted v1 → Candidate v2 → Accepted v2 → Candidate v3
 ```
 
-or it can live in another repository and deploy independently.
+1. Start from the exact `currentRevision`.
+2. Record the requested amendment and what must not regress.
+3. Create one candidate revision that references the accepted revision as
+   `previousRevisionId`.
+4. Deploy it separately and record repository/source metadata if useful.
+5. Review against its acceptance checks.
+6. If accepted, explicitly promote it:
+   - outgoing current → `superseded`;
+   - candidate → `current`;
+   - update `currentRevision`;
+   - record `dateAccepted`.
+7. The newly accepted revision becomes the next baseline.
 
-## 3. Deploy
+A candidate never overwrites the accepted baseline while it is under review.
 
-Record the version's deployment URL. Optionally record the source branch, commit
-or pull-request reference. The Studio is agnostic to whether V0, Cursor, Codex,
-Claude or another coding agent produced the implementation.
+## Mode 2: divergent exploration
 
-## 4. Share
+Use this only when a question genuinely benefits from alternatives.
 
-Share the stable Studio project page at `/projects/<slug>`. Reviewers can see
-the recommended Current version, open Candidates separately and understand what
-each one was intended to test.
+```text
+Accepted v2
+├── Option A
+├── Option B
+└── Option C
+```
 
-## 5. Collect feedback
+1. Create an exploration set attached to the named accepted baseline revision.
+2. State the design/research question and why divergence is needed.
+3. Define the intended axes of difference.
+4. Record constraints that apply to every option.
+5. Code and deploy the named alternatives independently.
+6. Compare/test them against shared evaluation criteria.
+7. Record findings, selected direction and selection rationale.
+8. Promote the selected direction into a **new candidate revision**.
+9. Review and explicitly accept that candidate through the sequential flow.
 
-For now, capture focused review questions outside a heavy feedback system. The
-Studio deliberately does not implement comments, annotations or Inflight-style
-review tooling in this phase.
+An exploration alternative never becomes the project's current experience by
+itself.
 
-## 6. Select and refine
+## Sharing and comparison
 
-Record why a version was selected or rejected. Promotion is explicit:
+Share the stable project page at `/projects/<slug>`.
 
-1. preserve the outgoing Current version;
-2. update its lifecycle status;
-3. mark the selected Candidate as `Current`;
-4. update `currentVersion`;
-5. add the consequential decision to the project decision log.
+The project page prioritises:
+
+1. current accepted experience;
+2. current candidate, if present;
+3. chronological revision history;
+4. exploration sets attached to their originating revision;
+5. decision log.
+
+Comparison UI is primarily for alternatives within an exploration set.
+Sequential revisions are represented as change history, not as equally prominent
+competing prototypes.
+
+## AI coding handoff
+
+Use the copyable Markdown context. It identifies the current working mode and
+exports the correct baseline, scope and guardrails for that mode.
 
 ## Safe iteration rule
 
 > Start new exploration work from the accepted baseline, preserve existing versions, restrict changes to the requested area and verify that previously accepted screens have not regressed.
+
+## Implementation boundary
+
+The Studio stores metadata and links only. Git, V0, Cursor, Codex, Claude or
+other development tools create branches, commits, pull requests, deployments and
+code changes.
