@@ -1,150 +1,152 @@
 # Daniel Brown Design Studio
 
-A repository-driven home for executable product-design prototypes.
+A repository-driven catalogue and playground for executable product-design work.
 
-The Studio is designed around one source of truth:
+The Studio deliberately separates **project context** from **prototype hosting**.
+Projects have permanent Studio pages; prototype versions can live in this
+repository or in independent GitHub/Vercel projects.
+
+## Model
+
+### Catalogue
+
+Each project is one validated manifest in:
 
 ```text
-Codex / V0
-    ↓
-   Git
-    ↓
-GitHub (when connected)
-    ↓
-Vercel previews + production
+projects/<slug>.json
 ```
 
-Each prototype is a real, independently buildable application with a stable
-slug and a small `prototype.json` design contract. Shared design principles and
-interaction rules live at repository level so agents do not start from zero on
-every project.
+and has a stable Studio route:
 
-## What is here now
+```text
+/projects/<slug>
+```
 
-- `apps/studio/` — the Studio index. It discovers prototype manifests and shows
-  their status, fidelity, intended URL, design question and handoff intent.
-- `apps/ai-campaign-production/` — the prepared home for the current V0 campaign
-  prototype. It is deliberately a placeholder until the existing V0 code is
-  imported, rather than a fake reconstruction.
-- `apps/needs-remediation-reference/` — the original POC idea preserved as an
-  executable reference: baseline → divergent explorations → HiFi.
-- `context/` — durable design principles, interaction rules, visual guidance and
-  prototyping rules for Codex/V0 to consume.
-- `blueprints/` — trusted product references that prototypes can declare in
-  their manifests.
-- `AGENTS.md` — repository-level instructions for Codex and other coding agents.
-- `scripts/new-prototype.mjs` — scaffolds a new independently executable app and
-  manifest.
-- `scripts/build-registry.mjs` — discovers all prototype manifests and generates
-  the Studio registry.
+The project page makes the Current recommended prototype obvious while preserving
+Candidate, Rejected and Archived versions, focused review questions, a concise
+decision log and a copyable Markdown context block for AI coding tools.
+
+### Playground
+
+A version can point to:
+
+- an internal Studio or playground route;
+- an independently deployed Vercel/V0 prototype;
+- another deployment URL.
+
+A project may optionally link to a separate repository. The Studio does not
+require prototype source to live here.
+
+Internal coded explorations can still use routes such as:
+
+```text
+/playground/campaign-list
+/playground/campaign-list/v2
+```
+
+## Current reference projects
+
+- **AI Campaign Production** is the first project using the new catalogue model.
+  Its project manifest links to the independent
+  `dbrown1976/automating-campaign-production` repository while preserving the
+  current accepted baseline.
+- **Needs Remediation** demonstrates a baseline, rejected exploration, candidate
+  and selected Current version.
 
 ## Run locally
-
-From the repository root:
 
 ```bash
 npm install
 npm run dev
 ```
 
-The Studio runs on Vite's default local port. To run the two prototype apps:
+The registry is regenerated and validated before the Studio starts.
+
+## Add a project
+
+The lightweight path is one manifest:
 
 ```bash
-npm run dev:campaign
-npm run dev:reference
-```
-
-## Create a prototype
-
-```bash
-npm run studio:new -- workflow-builder
-npm install
+npm run studio:new-project -- workflow-builder
 npm run registry
 ```
 
-The command creates:
+Edit `projects/workflow-builder.json`. You do not need to construct a page
+manually.
+
+If the project also needs a coded app inside this repository, the existing
+prototype scaffolder remains available:
+
+```bash
+npm run studio:new -- workflow-builder
+```
+
+## Metadata and validation
+
+`schemas/project.schema.json` defines the project contract. The registry build
+fails clearly for malformed manifests, invalid slugs, duplicate version ids,
+missing version references, multiple Current versions or invalid deployment
+references.
+
+Project statuses:
+
+- `exploring`
+- `testing`
+- `resolved`
+- `archived`
+
+Version lifecycle:
+
+- `Current`
+- `Candidate`
+- `Rejected`
+- `Archived`
+
+Creating an exploration must not overwrite Current. Promotion is an explicit
+metadata change.
+
+## Development workflow
 
 ```text
-apps/workflow-builder/
-├── AGENTS.md
-├── index.html
-├── package.json
-├── prototype.json
-├── src/
-└── vite.config.js
+explore → create coded alternatives → deploy → share → collect feedback → select and refine
 ```
 
-`prototype.json` is the contract between the prototype, the Studio and coding
-agents. The slug must match the app directory.
+Safe iteration rule:
 
-## Prototype manifest
+> Start new exploration work from the accepted baseline, preserve existing versions, restrict changes to the requested area and verify that previously accepted screens have not regressed.
 
-A typical manifest looks like:
+See `docs/WORKFLOW.md` for the short operating model.
 
-```json
-{
-  "slug": "ai-campaign-production",
-  "title": "AI Campaign Production",
-  "status": "exploring",
-  "fidelity": "hifi",
-  "updated": "2026-09-20",
-  "productionPath": "/ai-campaign-production",
-  "principles": [
-    "context/design-principles.md",
-    "context/interaction-rules.md"
-  ],
-  "blueprints": [],
-  "handoff": {
-    "dontMiss": [],
-    "ignore": []
-  }
-}
-```
+## AI coding context
 
-## Codex / V0 model
+Every project page exposes a copyable Markdown summary containing:
 
-Codex should work from the repository root and will pick up `AGENTS.md` plus
-prototype-local instructions.
+- problem and intended outcome;
+- users and workflow;
+- current design direction;
+- non-negotiable constraints;
+- accepted decisions;
+- open questions;
+- prototype and repository links.
 
-V0 should ultimately import the same GitHub repository and work against the
-specific app directory for the prototype being edited. GitHub becomes the
-bridge between the two editors instead of exporting/importing prototypes between
-tools.
+It is intended to be pasted into Codex, Claude, Cursor, V0 or another coding
+agent without changing the Studio's underlying model.
 
-## Vercel
+## Scope
 
-The apps are deliberately independent. Create one Vercel project per deployable
-app from this monorepo and set its Root Directory to the matching `apps/...`
-folder. See `docs/VERCEL.md` for the intended setup and public slug model.
+This phase intentionally does **not** add commenting, DOM annotation, agent
+orchestration, worktree management or automated model-to-model review. Focused
+review questions plus clear links to live prototypes are enough for the initial
+Studio.
 
-The target public URLs are:
+## Repository structure
 
-```text
-studio.danielbrown.design/
-studio.danielbrown.design/ai-campaign-production
-studio.danielbrown.design/needs-remediation-reference
-```
-
-The repository does not hard-code deployment URLs that do not exist yet. Once
-GitHub and the Vercel projects are connected, the Studio/domain routing layer can
-map those stable paths to the independently deployed apps.
-
-## What changed from the original POC
-
-The original POC treated contributor-owned JSON frames as the primary unit of
-work and relied on a local Express server to mutate files and create commits.
-That demonstrated layout/content separation, blueprints, fidelity stages and
-handoff intent, but the write flow could not operate on Vercel.
-
-This version changes the primary unit to an **executable prototype app**. Git is
-still the source of truth, but writes happen through the normal Codex/V0/GitHub
-workflow rather than through a server endpoint trying to commit to a Vercel
-filesystem.
-
-The useful concepts were kept:
-
-- trusted blueprints;
-- baseline / exploration / HiFi stages;
-- shared design principles;
-- explicit `dontMiss` / `ignore` handoff intent;
-- independent exploration rather than editing production code directly.
+- `projects/` — canonical project manifests.
+- `schemas/` — validation contract.
+- `apps/studio/` — catalogue UI.
+- `apps/*` — optional independently executable local prototype apps.
+- `context/` — durable design principles and interaction guidance.
+- `blueprints/` — trusted product references.
+- `scripts/build-registry.mjs` — validates manifests and builds the catalogue.
+- `scripts/new-project.mjs` — creates a lightweight project manifest.
+- `AGENTS.md` — repository and safe-iteration instructions.
