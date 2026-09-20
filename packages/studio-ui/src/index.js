@@ -1,7 +1,15 @@
-export const fidelityOrder = ["baseline", "exploration", "hifi"];
-export const statusLabels = {
+export const projectStatusLabels = {
   exploring: "Exploring",
-  converged: "Converged",
-  reference: "Reference",
+  testing: "Testing",
+  resolved: "Resolved",
   archived: "Archived"
 };
+
+export const versionStatusLabels = {
+  Current: "Current",
+  Candidate: "Candidate",
+  Rejected: "Rejected",
+  Archived: "Archived"
+};
+
+export const fidelityOrder = ["baseline", "exploration", "hifi"];
