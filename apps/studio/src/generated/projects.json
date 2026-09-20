@@ -1,0 +1,199 @@
+[
+  {
+    "slug": "ai-campaign-production",
+    "title": "AI Campaign Production",
+    "description": "A lightweight control layer for AI-assisted campaign assembly across Jira, CMS and DAM, with human attention focused on exceptions and consequential decisions.",
+    "status": "testing",
+    "updated": "2026-09-20",
+    "currentVersion": "stable-v0-handoff",
+    "repositoryUrl": "https://github.com/dbrown1976/automating-campaign-production",
+    "tags": [
+      "AI workflows",
+      "CMS",
+      "DAM",
+      "human control"
+    ],
+    "reviewQuestions": [
+      "Does the Attention → Campaigns → Actions / Manifest model make the workflow legible without recreating CMS or DAM?",
+      "Are intervention states and automated readiness states visually distinct enough?",
+      "Can reviewers understand what automation assembled, what still needs a human, and where to go next?"
+    ],
+    "versions": [
+      {
+        "id": "stable-v0-handoff",
+        "name": "Stable V0 handoff",
+        "status": "Current",
+        "whatChanged": "Established the accepted information architecture: global Attention and Campaigns, with campaign-level Actions and Manifest, plus a stable master-detail shell.",
+        "question": "Can a lightweight control layer coordinate campaign assembly while keeping exceptions, provenance and human checkpoints visible?",
+        "decisionRationale": "Selected as the accepted baseline for controlled hardening in Cursor. New explorations should branch from this baseline rather than overwrite it.",
+        "deploymentUrl": "/ai-campaign-production",
+        "source": {
+          "branch": "cursor/v1-polish"
+        }
+      }
+    ],
+    "decisionLog": [
+      {
+        "date": "2026-09-20",
+        "type": "accepted",
+        "decision": "Use Attention and Campaigns as the two top-level views, with Actions and Manifest inside a selected campaign.",
+        "rationale": "This separates operational follow-up from campaign status and avoids rebuilding CMS/DAM navigation inside the control layer."
+      },
+      {
+        "date": "2026-09-20",
+        "type": "accepted",
+        "decision": "Treat CMS and DAM as systems of record.",
+        "rationale": "Campaign Production should explain state, surface exceptions and route the user to detailed production work rather than duplicate existing editing surfaces."
+      },
+      {
+        "date": "2026-09-20",
+        "type": "constraint",
+        "decision": "Protect the accepted baseline during exploration.",
+        "rationale": "The V0 phase showed that broad rewrites could regress already accepted screens. New alternatives must preserve the current version until deliberately promoted."
+      },
+      {
+        "date": "2026-09-20",
+        "type": "rejected",
+        "decision": "Do not use Overview / Content / Assets as campaign tabs.",
+        "rationale": "That structure made the control layer feel like another CMS/DAM browser rather than a workflow-oriented production surface."
+      }
+    ],
+    "context": {
+      "problem": "Campaign production spans source tickets, structured CMS content and DAM assets. Mechanical assembly can be automated, but users still need a clear view of progress, exceptions and consequential decisions.",
+      "intendedOutcome": "Produce a credible first draft of a campaign automatically while keeping human attention focused on unresolved or uncertain work and preserving direct paths into the systems of record.",
+      "users": [
+        "Content authors",
+        "Web producers",
+        "Campaign production teams"
+      ],
+      "workflow": "A source ticket triggers campaign interpretation, asset and content discovery, CMS/DAM assembly and readiness checks. Campaign Production then surfaces unresolved actions and a read-only manifest of what was assembled.",
+      "currentDirection": "A restrained enterprise control layer: Attention shows cross-campaign work that needs a human; Campaigns shows status; Actions shows what must happen next; Manifest shows what automation created and where it lives.",
+      "constraints": [
+        "Do not become another CMS or DAM.",
+        "Do not hide consequential automation or unresolved exceptions.",
+        "Use shared underlying state for global Attention and campaign Actions.",
+        "Preserve accepted screens when testing a new exploration.",
+        "Keep detailed content and asset editing in the systems of record."
+      ],
+      "acceptedDecisions": [
+        "Attention and Campaigns are the top-level information architecture.",
+        "Actions and Manifest are the selected-campaign views.",
+        "Folders appear before Content and Assets in Manifest.",
+        "Campaign lifecycle status is distinct from object readiness status.",
+        "Signed-off campaigns can be duplicated; all non-archived campaigns can be archived."
+      ],
+      "openQuestions": [
+        "What is the clearest final treatment for semantic status messages in Attention, Actions and Manifest?",
+        "How should external CMS/DAM state changes be simulated in the portfolio prototype without implying false integration?",
+        "Which additional candidate explorations are worth preserving once Cursor hardening begins?"
+      ]
+    },
+    "projectPath": "/projects/ai-campaign-production"
+  },
+  {
+    "slug": "needs-remediation-reference",
+    "title": "Needs Remediation",
+    "description": "Reference project preserving the original baseline → exploration → converged direction model for a saved operational view.",
+    "status": "resolved",
+    "updated": "2026-09-20",
+    "currentVersion": "hifi-task-first",
+    "repositoryUrl": "https://github.com/dbrown1976/design-studio",
+    "tags": [
+      "blueprint",
+      "divergence",
+      "handoff"
+    ],
+    "reviewQuestions": [
+      "Does the selected direction distinguish a fixed saved-view definition from user-controlled narrowing filters?",
+      "Does the task-first toolbar preserve the production table while making the operational goal clearer?"
+    ],
+    "versions": [
+      {
+        "id": "baseline",
+        "name": "Baseline",
+        "status": "Archived",
+        "whatChanged": "No design change. Preserves the trusted production starting point.",
+        "question": "What does the existing production view already establish that must not regress?",
+        "decisionRationale": "Retained as the accepted starting reference for later comparisons.",
+        "deploymentUrl": "/needs-remediation-reference"
+      },
+      {
+        "id": "definition-outside",
+        "name": "Definition outside",
+        "status": "Rejected",
+        "whatChanged": "Moved the fixed saved-view definition outside the filter model.",
+        "question": "Would separating the definition from filters clarify what the user can and cannot change?",
+        "decisionRationale": "Useful structural exploration, but weaker than the task-first direction at expressing the operational job.",
+        "deploymentUrl": "/needs-remediation-reference"
+      },
+      {
+        "id": "task-first-exploration",
+        "name": "Task-first toolbar",
+        "status": "Candidate",
+        "whatChanged": "Made the task and narrowing controls the dominant toolbar model.",
+        "question": "Does a task-first toolbar better explain the view while preserving user-controlled narrowing?",
+        "decisionRationale": "Kept as the strongest alternative because it exposed the core task without redesigning the underlying table.",
+        "deploymentUrl": "/needs-remediation-reference"
+      },
+      {
+        "id": "hifi-task-first",
+        "name": "HiFi task-first",
+        "status": "Current",
+        "whatChanged": "Refined the task-first exploration into the current high-fidelity direction while preserving the production table.",
+        "question": "Can the task-first model converge into a product-fidelity direction without losing the trusted baseline?",
+        "decisionRationale": "Selected because it best separates fixed view meaning from user-controlled filters and preserves established table behaviour.",
+        "deploymentUrl": "/needs-remediation-reference"
+      }
+    ],
+    "decisionLog": [
+      {
+        "date": "2026-09-20",
+        "type": "accepted",
+        "decision": "Keep one stable view name across navigation, breadcrumb and page context.",
+        "rationale": "Competing names made the object model harder to understand."
+      },
+      {
+        "date": "2026-09-20",
+        "type": "accepted",
+        "decision": "Treat the saved-view definition as explanatory copy, not removable filter chips.",
+        "rationale": "The definition describes the fixed scope of the view; user filters only narrow within it."
+      },
+      {
+        "date": "2026-09-20",
+        "type": "constraint",
+        "decision": "Preserve the existing message table behaviour.",
+        "rationale": "The design question concerns the header/filter model, not a redesign of the underlying table."
+      },
+      {
+        "date": "2026-09-20",
+        "type": "rejected",
+        "decision": "Do not converge on the definition-outside exploration.",
+        "rationale": "It clarified the fixed definition, but it did not express the operational task as strongly as the task-first model."
+      }
+    ],
+    "context": {
+      "problem": "A saved operational view has a fixed definition, but the existing filter presentation can make that definition look removable or user-controlled.",
+      "intendedOutcome": "Explain the fixed scope of the view while letting users confidently narrow results with their own filters.",
+      "users": [
+        "Security operations users reviewing messages requiring remediation"
+      ],
+      "workflow": "Users open a stable Needs Remediation view, understand its fixed definition, then narrow within it using operational filters while preserving the existing table workflow.",
+      "currentDirection": "A task-first header and toolbar that states the job clearly, separates the fixed view definition from user-controlled narrowing and leaves the production table intact.",
+      "constraints": [
+        "Preserve the trusted production table and row behaviour.",
+        "Use one stable name for the view.",
+        "Do not represent fixed definition terms as removable filter chips."
+      ],
+      "acceptedDecisions": [
+        "Use the task-first toolbar as the current direction.",
+        "Keep the fixed definition separate from user-controlled filters.",
+        "Preserve baseline table behaviour."
+      ],
+      "openQuestions": [
+        "How much explanatory copy is needed before the fixed definition becomes visually heavy?",
+        "Which parts of the task-first model should become reusable product patterns?"
+      ]
+    },
+    "projectPath": "/projects/needs-remediation-reference"
+  }
+]
