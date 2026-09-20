@@ -1,9 +1,16 @@
 # AI Campaign Production
 
-This directory is the intended home for the current V0 campaign-production
-prototype. Read the root `AGENTS.md`, `prototype.json`, and the shared context
-before editing.
+This local app is a placeholder/integration slot. The canonical Design Studio
+project context now lives in:
 
-When the real V0 code is imported, preserve its working interaction model rather
-than rebuilding it from this placeholder. Treat the manifest's handoff notes as
-design intent, not as a complete specification.
+`projects/ai-campaign-production.json`
+
+The active prototype source lives in the separate repository referenced by that
+project manifest. Do not rebuild or overwrite the accepted prototype here merely
+because this placeholder exists.
+
+Before making any exploration:
+
+> Start new exploration work from the accepted baseline, preserve existing versions, restrict changes to the requested area and verify that previously accepted screens have not regressed.
+
+Use this local app only when deliberately testing an internal Studio-hosted route.
