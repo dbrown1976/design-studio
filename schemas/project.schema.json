@@ -10,8 +10,10 @@
     "description",
     "status",
     "updated",
-    "currentVersion",
-    "versions",
+    "currentRevision",
+    "revisions",
+    "explorationSets",
+    "workingMode",
     "context",
     "decisionLog"
   ],
@@ -40,7 +42,7 @@
       "type": "string",
       "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
     },
-    "currentVersion": {
+    "currentRevision": {
       "type": "string",
       "minLength": 1
     },
@@ -61,7 +63,7 @@
         "type": "string"
       }
     },
-    "versions": {
+    "revisions": {
       "type": "array",
       "minItems": 1,
       "items": {
@@ -70,11 +72,15 @@
         "required": [
           "id",
           "name",
+          "previousRevisionId",
           "status",
-          "whatChanged",
-          "question",
-          "decisionRationale",
-          "deploymentUrl"
+          "summary",
+          "scope",
+          "preserve",
+          "deploymentUrl",
+          "validationStatus",
+          "acceptanceChecks",
+          "dateAccepted"
         ],
         "properties": {
           "id": {
@@ -85,29 +91,41 @@
             "type": "string",
             "minLength": 1
           },
-          "status": {
-            "enum": [
-              "Current",
-              "Candidate",
-              "Rejected",
-              "Archived"
+          "previousRevisionId": {
+            "type": [
+              "string",
+              "null"
             ]
           },
-          "whatChanged": {
+          "status": {
+            "enum": [
+              "candidate",
+              "current",
+              "superseded",
+              "archived"
+            ]
+          },
+          "summary": {
             "type": "string",
             "minLength": 1
           },
-          "question": {
+          "scope": {
             "type": "string",
             "minLength": 1
           },
-          "decisionRationale": {
-            "type": "string",
-            "minLength": 1
+          "preserve": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
           },
           "deploymentUrl": {
             "type": "string",
             "minLength": 1
+          },
+          "repositoryUrl": {
+            "type": "string",
+            "pattern": "^https?://"
           },
           "source": {
             "type": "object",
@@ -126,9 +144,226 @@
                 "minLength": 1
               }
             }
+          },
+          "validationStatus": {
+            "enum": [
+              "not-reviewed",
+              "in-review",
+              "passed",
+              "failed"
+            ]
+          },
+          "acceptanceChecks": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "dateAccepted": {
+            "anyOf": [
+              {
+                "type": "null"
+              },
+              {
+                "type": "string",
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+              }
+            ]
           }
         }
       }
+    },
+    "explorationSets": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "name",
+          "baselineRevisionId",
+          "question",
+          "context",
+          "axesOfDifference",
+          "constraints",
+          "evaluationCriteria",
+          "alternatives",
+          "testingNotes",
+          "selectedAlternativeId",
+          "selectionRationale"
+        ],
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "baselineRevisionId": {
+            "type": "string",
+            "minLength": 1
+          },
+          "question": {
+            "type": "string",
+            "minLength": 1
+          },
+          "context": {
+            "type": "string",
+            "minLength": 1
+          },
+          "axesOfDifference": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "constraints": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "evaluationCriteria": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "alternatives": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "name",
+                "deploymentUrl",
+                "intendedDifference"
+              ],
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"
+                },
+                "name": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "deploymentUrl": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "intendedDifference": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "repositoryUrl": {
+                  "type": "string",
+                  "pattern": "^https?://"
+                },
+                "source": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "properties": {
+                    "branch": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "commit": {
+                      "type": "string",
+                      "minLength": 1
+                    },
+                    "pullRequest": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "testingNotes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "selectedAlternativeId": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "selectionRationale": {
+            "type": [
+              "string",
+              "null"
+            ]
+          }
+        }
+      }
+    },
+    "workingMode": {
+      "oneOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "requestedAmendment",
+            "mayChange",
+            "mustRemainUnchanged",
+            "acceptanceChecks"
+          ],
+          "properties": {
+            "type": {
+              "const": "sequential"
+            },
+            "requestedAmendment": {
+              "type": "string",
+              "minLength": 1
+            },
+            "mayChange": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "mustRemainUnchanged": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "acceptanceChecks": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "explorationSetId"
+          ],
+          "properties": {
+            "type": {
+              "const": "exploration"
+            },
+            "explorationSetId": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      ]
     },
     "decisionLog": {
       "type": "array",
