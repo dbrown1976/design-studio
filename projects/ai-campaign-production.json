@@ -4,7 +4,7 @@
   "description": "A lightweight control layer for AI-assisted campaign assembly across Jira, CMS and DAM, with human attention focused on exceptions and consequential decisions.",
   "status": "testing",
   "updated": "2026-09-20",
-  "currentVersion": "stable-v0-handoff",
+  "currentRevision": "v1-stable-v0-handoff",
   "repositoryUrl": "https://github.com/dbrown1976/automating-campaign-production",
   "tags": [
     "AI workflows",
@@ -17,20 +17,57 @@
     "Are intervention states and automated readiness states visually distinct enough?",
     "Can reviewers understand what automation assembled, what still needs a human, and where to go next?"
   ],
-  "versions": [
+  "revisions": [
     {
-      "id": "stable-v0-handoff",
-      "name": "Stable V0 handoff",
-      "status": "Current",
-      "whatChanged": "Established the accepted information architecture: global Attention and Campaigns, with campaign-level Actions and Manifest, plus a stable master-detail shell.",
-      "question": "Can a lightweight control layer coordinate campaign assembly while keeping exceptions, provenance and human checkpoints visible?",
-      "decisionRationale": "Selected as the accepted baseline for controlled hardening in Cursor. New explorations should branch from this baseline rather than overwrite it.",
+      "id": "v1-stable-v0-handoff",
+      "name": "v1 · Stable V0 handoff",
+      "previousRevisionId": null,
+      "status": "current",
+      "summary": "Established the accepted information architecture: global Attention and Campaigns, with campaign-level Actions and Manifest, plus the stable master-detail shell.",
+      "scope": "Accepted V0 baseline. This revision is the protected starting point for the Cursor hardening pass.",
+      "preserve": [
+        "Attention and Campaigns remain the two top-level views.",
+        "A selected campaign uses Actions and Manifest only.",
+        "The master-detail shell and status-first campaign list remain intact.",
+        "CMS and DAM remain systems of record rather than being recreated in Campaign Production."
+      ],
       "deploymentUrl": "/ai-campaign-production",
+      "repositoryUrl": "https://github.com/dbrown1976/automating-campaign-production",
       "source": {
-        "branch": "cursor/v1-polish"
-      }
+        "branch": "v0/campaign-production-shell"
+      },
+      "validationStatus": "passed",
+      "acceptanceChecks": [
+        "Accepted shell, Campaigns table and split-view interaction render without layout regressions.",
+        "Attention and campaign Actions continue to represent the same underlying unresolved work.",
+        "Actions and Manifest remain the selected-campaign information architecture."
+      ],
+      "dateAccepted": "2026-09-20"
     }
   ],
+  "explorationSets": [],
+  "workingMode": {
+    "type": "sequential",
+    "requestedAmendment": "Harden the accepted v1 prototype in Cursor through small, controlled implementation changes rather than broad regeneration.",
+    "mayChange": [
+      "Semantic Status message treatment in Attention, Actions and Manifest.",
+      "Manifest ordering and delivery-key presentation.",
+      "CMS/DAM action semantics and simulated external-resolution behaviour.",
+      "Campaign Archive and Duplicate interactions.",
+      "Reset behaviour, accessibility and regression coverage."
+    ],
+    "mustRemainUnchanged": [
+      "The accepted Attention / Campaigns and Actions / Manifest information architecture.",
+      "The stable master-detail shell and status-first campaign list.",
+      "CMS and DAM as systems of record.",
+      "Shared state between global Attention and campaign Actions."
+    ],
+    "acceptanceChecks": [
+      "Previously accepted screens remain visually and behaviourally intact outside the requested amendment.",
+      "Autumn Trail action resolution, Black Friday review failure, Winter Running sign-off, Archive, Duplicate and Reset all complete without stale state.",
+      "Campaign Production remains a lightweight control layer rather than expanding into CMS/DAM editing."
+    ]
+  },
   "decisionLog": [
     {
       "date": "2026-09-20",
@@ -47,8 +84,8 @@
     {
       "date": "2026-09-20",
       "type": "constraint",
-      "decision": "Protect the accepted baseline during exploration.",
-      "rationale": "The V0 phase showed that broad rewrites could regress already accepted screens. New alternatives must preserve the current version until deliberately promoted."
+      "decision": "Protect the accepted baseline during sequential iteration.",
+      "rationale": "The V0 phase showed that broad rewrites could regress already accepted screens. A candidate revision must build from the accepted revision and promotion must be explicit."
     },
     {
       "date": "2026-09-20",
@@ -71,7 +108,7 @@
       "Do not become another CMS or DAM.",
       "Do not hide consequential automation or unresolved exceptions.",
       "Use shared underlying state for global Attention and campaign Actions.",
-      "Preserve accepted screens when testing a new exploration.",
+      "Preserve accepted screens when making a sequential amendment.",
       "Keep detailed content and asset editing in the systems of record."
     ],
     "acceptedDecisions": [
@@ -84,7 +121,7 @@
     "openQuestions": [
       "What is the clearest final treatment for semantic status messages in Attention, Actions and Manifest?",
       "How should external CMS/DAM state changes be simulated in the portfolio prototype without implying false integration?",
-      "Which additional candidate explorations are worth preserving once Cursor hardening begins?"
+      "Which future questions genuinely require divergent exploration rather than another sequential revision?"
     ]
   }
 }
