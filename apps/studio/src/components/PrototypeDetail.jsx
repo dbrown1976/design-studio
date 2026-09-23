@@ -15,9 +15,15 @@ export default function PrototypeDetail({ prototype, onBack }) {
             </section>
           )}
           <section className="detail-section">
-            <h2>Intended public route</h2>
-            <code className="route-chip">{path}</code>
-            <p className="muted">The route becomes live when this app is connected to its Vercel project and the Studio domain rewrite is configured.</p>
+            <h2>{prototype.live ? "Live public route" : "Intended public route"}</h2>
+            {prototype.live ? (
+              <a className="route-chip route-link" href={prototype.productionPath} target="_blank" rel="noreferrer">{path}</a>
+            ) : (
+              <>
+                <code className="route-chip">{path}</code>
+                <p className="muted">This route becomes live when the prototype is connected to its Vercel project and the Studio domain rewrite is configured.</p>
+              </>
+            )}
           </section>
           {prototype.handoff?.dontMiss?.length > 0 && (
             <section className="detail-section">

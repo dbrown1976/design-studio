@@ -44,7 +44,12 @@ dd { margin: 0; font-size: 13px; }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .92em; }
 .prototype-card__tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 24px; }
 .prototype-card__tags span { font-size: 11px; padding: 5px 7px; border: 1px solid var(--line); border-radius: 5px; color: var(--muted); }
-.prototype-card > button { margin-top: auto; align-self: flex-start; border: 1px solid #1f2527; color: white; background: #1f2527; padding: 10px 14px; border-radius: 8px; cursor: pointer; }
+.prototype-card__actions { margin-top: auto; display: flex; align-items: center; gap: 8px; }
+.prototype-card__actions a, .prototype-card__actions button { border: 1px solid #1f2527; padding: 10px 14px; border-radius: 8px; cursor: pointer; font: inherit; text-decoration: none; }
+.prototype-card__actions a { color: white; background: #1f2527; }
+.prototype-card__actions button { color: #1f2527; background: transparent; }
+.route-link { color: var(--ink); text-decoration: none; }
+.route-link:hover { text-decoration: underline; }
 footer { border-top: 1px solid var(--line); min-height: 96px; display: flex; align-items: center; justify-content: space-between; gap: 16px; color: var(--muted); font-size: 12px; }
 .detail-shell { padding-top: 28px; }
 .text-button { padding-left: 0; }

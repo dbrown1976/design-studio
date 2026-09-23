@@ -20,7 +20,12 @@ export default function PrototypeCard({ prototype, onOpen }) {
       <div className="prototype-card__tags">
         {(prototype.tags || []).map((tag) => <span key={tag}>{tag}</span>)}
       </div>
-      <button onClick={() => onOpen(prototype.slug)}>Inspect prototype</button>
+      <div className="prototype-card__actions">
+        {prototype.live && (
+          <a href={prototype.productionPath} target="_blank" rel="noreferrer">Open prototype</a>
+        )}
+        <button onClick={() => onOpen(prototype.slug)}>Inspect</button>
+      </div>
     </article>
   );
 }

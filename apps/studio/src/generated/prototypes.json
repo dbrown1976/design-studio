@@ -38,7 +38,8 @@
         "Do not turn the prototype into a replacement CMS, DAM, or AI chatbot.",
         "Do not replace the in-situ campaign detail interaction with route-based detail pages unless explicitly requested."
       ]
-    }
+    },
+    "live": true
   },
   {
     "slug": "needs-remediation-reference",
