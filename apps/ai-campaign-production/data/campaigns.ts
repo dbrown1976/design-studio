@@ -24,6 +24,8 @@ export type ContentItem = {
   cmsUrl: string;
   childIds: string[];
   assetIds: string[];
+  /** Visible image-chooser field titles on this content item (Amplience image fields). */
+  imageFields?: string[];
   provenance?: {
     mode: "direct" | "inferred" | "generated";
     summary: string;
@@ -195,6 +197,7 @@ export const canonicalCampaigns: Campaign[] = [
         cmsUrl: "/cms/content/hero-banner",
         childIds: [],
         assetIds: ["asset-hero"],
+        imageFields: ["Image"],
         provenance: {
           mode: "inferred",
           summary:
@@ -234,6 +237,7 @@ export const canonicalCampaigns: Campaign[] = [
         cmsUrl: "/cms/content/trail-pro-slide",
         childIds: [],
         assetIds: ["asset-trail-pro"],
+        imageFields: ["Image"],
         provenance: {
           mode: "direct",
           summary: "Trail Pro is the first range named for the carousel.",
@@ -252,6 +256,7 @@ export const canonicalCampaigns: Campaign[] = [
         cmsUrl: "/cms/content/ridge-slide",
         childIds: [],
         assetIds: ["asset-ridge"],
+        imageFields: ["Image"],
         provenance: {
           mode: "direct",
           summary: "Ridge is the second range named for the carousel.",
@@ -271,6 +276,7 @@ export const canonicalCampaigns: Campaign[] = [
         cmsUrl: "/cms/content/accessories-slide",
         childIds: [],
         assetIds: ["asset-accessories"],
+        imageFields: ["Image"],
         provenance: {
           mode: "direct",
           summary: "Accessories is the third range named for the carousel.",
@@ -289,6 +295,7 @@ export const canonicalCampaigns: Campaign[] = [
         cmsUrl: "/cms/content/promotional-banner",
         childIds: [],
         assetIds: ["asset-mobile"],
+        imageFields: ["Image", "Mobile Image"],
         provenance: {
           mode: "inferred",
           summary:
@@ -324,6 +331,7 @@ export const canonicalCampaigns: Campaign[] = [
         cmsUrl: "/cms/content/autumn-trail-email-hero",
         childIds: [],
         assetIds: [],
+        imageFields: ["Image"],
         provenance: {
           mode: "inferred",
           summary:

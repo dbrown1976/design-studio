@@ -2,7 +2,7 @@
   "id": "v1",
   "name": "Stable Campaign Production baseline",
   "previousRevision": null,
-  "status": "current",
+  "status": "superseded",
   "fidelity": "hifi",
   "summary": "Imported the stable V0/Cursor Campaign Production prototype into Design Studio as the accepted baseline.",
   "scope": "Initial accepted baseline. No product or interaction redesign was introduced during the Studio import.",

@@ -4,7 +4,7 @@
     "title": "AI Campaign Production",
     "prototypeSlug": "ai-campaign-production",
     "description": "AI-assisted campaign production across CMS, DAM and Jira workflows.",
-    "currentRevision": "v1",
+    "currentRevision": "v3",
     "productionPath": "/ai-campaign-production",
     "updated": "2026-09-23",
     "revisions": [
@@ -12,7 +12,7 @@
         "id": "v1",
         "name": "Stable Campaign Production baseline",
         "previousRevision": null,
-        "status": "current",
+        "status": "superseded",
         "fidelity": "hifi",
         "summary": "Imported the stable V0/Cursor Campaign Production prototype into Design Studio as the accepted baseline.",
         "scope": "Initial accepted baseline. No product or interaction redesign was introduced during the Studio import.",
@@ -46,12 +46,12 @@
       },
       {
         "id": "v2",
-        "name": "Candidate v2 — pending design brief",
+        "name": "Default landing on Attention",
         "previousRevision": "v1",
-        "status": "candidate",
+        "status": "superseded",
         "fidelity": "hifi",
-        "summary": "Candidate revision established from accepted v1. Product amendment pending design brief.",
-        "scope": "No product or interaction changes yet. This record opens the sequential candidate so work can proceed without overwriting the accepted baseline.",
+        "summary": "Change the prototype default landing view from the Campaigns tab to the Attention tab.",
+        "scope": "Default activeView on first load (and Reset demo) is Attention. Tab order, tab design, and all other Campaign Production behaviour remain unchanged from accepted v1.",
         "preserve": [
           "Full Campaigns table → select row → in-situ split view → inspect → close → restore full table.",
           "Campaign Production remains a control layer and wayfinder over CMS, DAM and Jira rather than replacing those systems.",
@@ -70,10 +70,42 @@
           "commit": "16d85c1661ee5f99f02b62a6cee2673a8f6927cf"
         },
         "validation": {
-          "status": "not-reviewed",
-          "notes": null
+          "status": "accepted",
+          "notes": "Default landing on Attention verified locally via Studio proxy and direct Next route. Campaigns tab remains selectable and unchanged."
         },
-        "acceptedAt": null
+        "acceptedAt": "2026-09-23"
+      },
+      {
+        "id": "v3",
+        "name": "Baseline interaction cleanup",
+        "previousRevision": "v2",
+        "status": "current",
+        "fidelity": "hifi",
+        "summary": "Baseline interaction cleanup: centre the Attention counter in a square badge, implement Find destination as Content item → unpopulated image chooser, and standardise campaign actions to a single ghost icon or ellipsis menu.",
+        "scope": "Three tightly scoped interaction fixes. (1) Attention nav counter: flex-centred, approximately square, 4px radius, horizontal growth for larger values. (2) Find destination: staged popover selecting campaign content then an unpopulated image-chooser field by visible title; linking updates the existing content/asset graph. (3) Campaign actions: Archive ghost icon for Needs attention and Needs review; Duplicate + Archive overflow menu for Signed off.",
+        "preserve": [
+          "Full Campaigns table → select row → in-situ split view → inspect → close → restore full table.",
+          "Campaign Production remains a control layer and wayfinder over CMS, DAM and Jira rather than replacing those systems.",
+          "Attention states are actionable and resolving an item updates surrounding workflow state.",
+          "Human checkpoints remain visible around consequential or uncertain automated steps.",
+          "Default landing view remains the Attention tab."
+        ],
+        "deployment": {
+          "productionUrl": "https://studio.danielbrown.design/ai-campaign-production",
+          "standaloneUrl": "https://ai-campaign-production.vercel.app/ai-campaign-production",
+          "previewUrl": null
+        },
+        "repository": {
+          "path": "apps/ai-campaign-production",
+          "branch": "candidate/ai-campaign-production-v3",
+          "commit": null,
+          "pullRequest": null
+        },
+        "validation": {
+          "status": "accepted",
+          "notes": "Accepted after local verification of Attention counter geometry, Find destination hierarchy, and campaign action ghost/ellipsis controls."
+        },
+        "acceptedAt": "2026-09-23"
       }
     ],
     "explorationSets": []

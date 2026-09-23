@@ -1,11 +1,11 @@
 {
   "id": "v2",
-  "name": "Candidate v2 — pending design brief",
+  "name": "Default landing on Attention",
   "previousRevision": "v1",
-  "status": "candidate",
+  "status": "superseded",
   "fidelity": "hifi",
-  "summary": "Candidate revision established from accepted v1. Product amendment pending design brief.",
-  "scope": "No product or interaction changes yet. This record opens the sequential candidate so work can proceed without overwriting the accepted baseline.",
+  "summary": "Change the prototype default landing view from the Campaigns tab to the Attention tab.",
+  "scope": "Default activeView on first load (and Reset demo) is Attention. Tab order, tab design, and all other Campaign Production behaviour remain unchanged from accepted v1.",
   "preserve": [
     "Full Campaigns table → select row → in-situ split view → inspect → close → restore full table.",
     "Campaign Production remains a control layer and wayfinder over CMS, DAM and Jira rather than replacing those systems.",
@@ -24,8 +24,8 @@
     "commit": "16d85c1661ee5f99f02b62a6cee2673a8f6927cf"
   },
   "validation": {
-    "status": "not-reviewed",
-    "notes": null
+    "status": "accepted",
+    "notes": "Default landing on Attention verified locally via Studio proxy and direct Next route. Campaigns tab remains selectable and unchanged."
   },
-  "acceptedAt": null
+  "acceptedAt": "2026-09-23"
 }

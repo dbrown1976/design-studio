@@ -1,11 +1,13 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import { Menu, Popover, Tooltip } from '@mantine/core'
 import {
   IconArchive,
   IconArrowUpRight,
   IconCheck,
   IconCopy,
+  IconDotsVertical,
   IconX,
 } from '@tabler/icons-react'
 import {
@@ -13,6 +15,7 @@ import {
   type AttentionItem,
   type Campaign,
   type CampaignStatus,
+  type ContentItem,
 } from '@/data/campaigns'
 
 const statusStyles: Record<CampaignStatus, string> = {
@@ -31,6 +34,50 @@ function formatDate(date: string) {
     month: 'short',
     year: 'numeric',
   }).format(new Date(`${date}T00:00:00`))
+}
+
+function getPopulatedImageFields(contentId: string, campaign: Campaign) {
+  return new Set(
+    campaign.assets
+      .filter((asset) => asset.kind === 'image')
+      .flatMap((asset) =>
+        asset.linkedFrom
+          .filter((link) => link.contentId === contentId)
+          .map((link) => link.field),
+      ),
+  )
+}
+
+function getUnpopulatedImageChoosers(content: ContentItem, campaign: Campaign) {
+  const fields = content.imageFields ?? []
+  const populated = getPopulatedImageFields(content.id, campaign)
+  return fields.filter((name) => !populated.has(name))
+}
+
+function getContentWithUnpopulatedChoosers(campaign: Campaign) {
+  return campaign.content
+    .map((content) => ({
+      content,
+      choosers: getUnpopulatedImageChoosers(content, campaign),
+    }))
+    .filter((entry) => entry.choosers.length > 0)
+}
+
+type CampaignActionId = 'duplicate' | 'archive'
+
+function getCampaignActions(campaign: Campaign): CampaignActionId[] {
+  if (
+    campaign.status === 'needs_attention' ||
+    campaign.status === 'needs_review'
+  ) {
+    return ['archive']
+  }
+
+  if (campaign.status === 'signed_off') {
+    return ['duplicate', 'archive']
+  }
+
+  return []
 }
 
 function StatusBadge({ campaign }: { campaign: Campaign }) {
@@ -118,6 +165,181 @@ function stopRowSelection(event: React.SyntheticEvent) {
   event.stopPropagation()
 }
 
+function CampaignActions({
+  campaign,
+  onDuplicate,
+  onArchive,
+}: {
+  campaign: Campaign
+  onDuplicate: (campaign: Campaign) => void
+  onArchive: (campaign: Campaign) => void
+}) {
+  const actions = getCampaignActions(campaign)
+  if (actions.length === 0) return null
+
+  const runAction = (action: CampaignActionId) => {
+    if (action === 'duplicate') onDuplicate(campaign)
+    if (action === 'archive') onArchive(campaign)
+  }
+
+  if (actions.length === 1) {
+    const action = actions[0]
+    const label = action === 'duplicate' ? 'Duplicate' : 'Archive'
+    const Icon = action === 'duplicate' ? IconCopy : IconArchive
+    return (
+      <Tooltip label={label} position="top" withArrow openDelay={200}>
+        <button
+          type="button"
+          className="ghost-icon-button"
+          aria-label={label}
+          onClick={() => runAction(action)}
+        >
+          <Icon size={16} stroke={1.75} aria-hidden />
+        </button>
+      </Tooltip>
+    )
+  }
+
+  return (
+    <Menu shadow="sm" position="bottom-end" withinPortal>
+      <Menu.Target>
+        <Tooltip label="Campaign actions" position="top" withArrow openDelay={200}>
+          <button
+            type="button"
+            className="ghost-icon-button"
+            aria-label="Campaign actions"
+          >
+            <IconDotsVertical size={16} stroke={1.75} aria-hidden />
+          </button>
+        </Tooltip>
+      </Menu.Target>
+      <Menu.Dropdown>
+        {actions.map((action) => (
+          <Menu.Item
+            key={action}
+            leftSection={
+              action === 'duplicate' ? (
+                <IconCopy size={14} stroke={1.75} />
+              ) : (
+                <IconArchive size={14} stroke={1.75} />
+              )
+            }
+            onClick={() => runAction(action)}
+          >
+            {action === 'duplicate' ? 'Duplicate' : 'Archive'}
+          </Menu.Item>
+        ))}
+      </Menu.Dropdown>
+    </Menu>
+  )
+}
+
+function FindDestinationControl({
+  campaign,
+  item,
+  onLink,
+}: {
+  campaign: Campaign
+  item: AttentionItem
+  onLink: (item: AttentionItem, contentId: string, field: string) => void
+}) {
+  const [opened, setOpened] = useState(false)
+  const [contentId, setContentId] = useState('')
+  const destinations = useMemo(
+    () => getContentWithUnpopulatedChoosers(campaign),
+    [campaign],
+  )
+  const selected = destinations.find((entry) => entry.content.id === contentId)
+  const choosers = selected?.choosers ?? []
+
+  useEffect(() => {
+    if (!opened) {
+      setContentId('')
+    }
+  }, [opened])
+
+  useEffect(() => {
+    if (contentId && !destinations.some((entry) => entry.content.id === contentId)) {
+      setContentId('')
+    }
+  }, [contentId, destinations])
+
+  return (
+    <Popover
+      opened={opened}
+      onChange={setOpened}
+      position="bottom-start"
+      shadow="sm"
+      withinPortal
+    >
+      <Popover.Target>
+        <button
+          type="button"
+          className="primary-action-btn"
+          onClick={() => setOpened((value) => !value)}
+          aria-expanded={opened}
+        >
+          Find destination
+        </button>
+      </Popover.Target>
+      <Popover.Dropdown>
+        <div className="find-destination">
+          {destinations.length === 0 ? (
+            <p className="find-destination-empty">
+              No unpopulated image choosers in this campaign.
+            </p>
+          ) : (
+            <>
+              <div className="find-destination-field">
+                <label htmlFor={`find-content-${item.id}`}>Content item</label>
+                <select
+                  id={`find-content-${item.id}`}
+                  value={contentId}
+                  onChange={(event) => setContentId(event.target.value)}
+                >
+                  <option value="">Select content item</option>
+                  {destinations.map(({ content }) => (
+                    <option key={content.id} value={content.id}>
+                      {content.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="find-destination-field">
+                <label htmlFor={`find-field-${item.id}`}>Image chooser</label>
+                <select
+                  id={`find-field-${item.id}`}
+                  value=""
+                  disabled={!contentId || choosers.length === 0}
+                  onChange={(event) => {
+                    const field = event.target.value
+                    if (!contentId || !field) return
+                    onLink(item, contentId, field)
+                    setOpened(false)
+                  }}
+                >
+                  <option value="">
+                    {!contentId
+                      ? 'Select a content item first'
+                      : choosers.length === 0
+                        ? 'No unpopulated image choosers'
+                        : 'Select image chooser'}
+                  </option>
+                  {choosers.map((field) => (
+                    <option key={field} value={field}>
+                      {field}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
+          )}
+        </div>
+      </Popover.Dropdown>
+    </Popover>
+  )
+}
+
 function CampaignTable({
   campaigns,
   onSelect,
@@ -179,22 +401,11 @@ function CampaignTable({
                 </ExternalLink>
               </td>
               <td className="campaign-table-actions" onClick={stopRowSelection}>
-                {campaign.status === 'signed_off' ? (
-                  <div className="table-action-stack">
-                    <button
-                      className="table-primary-action"
-                      onClick={() => onDuplicate(campaign)}
-                    >
-                      Duplicate
-                    </button>
-                    <button
-                      className="table-secondary-action"
-                      onClick={() => onArchive(campaign)}
-                    >
-                      Archive
-                    </button>
-                  </div>
-                ) : null}
+                <CampaignActions
+                  campaign={campaign}
+                  onDuplicate={onDuplicate}
+                  onArchive={onArchive}
+                />
               </td>
             </tr>
           ))}
@@ -241,6 +452,7 @@ function ActionColumn({
   onResolve,
   onOpen,
   onInspect,
+  onLinkDestination,
   resolving,
 }: {
   item: AttentionItem
@@ -248,6 +460,11 @@ function ActionColumn({
   onResolve: (item: AttentionItem, action: string) => void
   onOpen: (campaignId: string, targetId?: string) => void
   onInspect?: (targetId: string) => void
+  onLinkDestination: (
+    item: AttentionItem,
+    contentId: string,
+    field: string,
+  ) => void
   resolving?: boolean
 }) {
   if (resolving) {
@@ -269,9 +486,17 @@ function ActionColumn({
 
   return (
     <div className="attention-actions">
-      <button className="primary-action-btn" onClick={runPrimary}>
-        {item.primaryAction.label}
-      </button>
+      {item.primaryAction.action === 'find_destination' ? (
+        <FindDestinationControl
+          campaign={campaign}
+          item={item}
+          onLink={onLinkDestination}
+        />
+      ) : (
+        <button className="primary-action-btn" onClick={runPrimary}>
+          {item.primaryAction.label}
+        </button>
+      )}
 
       {item.secondaryActions?.map((action, index) => {
         if (action.href) {
@@ -314,6 +539,7 @@ function ActionRow({
   onResolve,
   onOpen,
   onInspect,
+  onLinkDestination,
   resolving,
   showCampaign,
 }: {
@@ -322,6 +548,11 @@ function ActionRow({
   onResolve: (item: AttentionItem, action: string) => void
   onOpen: (campaignId: string, targetId?: string) => void
   onInspect?: (targetId: string) => void
+  onLinkDestination: (
+    item: AttentionItem,
+    contentId: string,
+    field: string,
+  ) => void
   resolving?: boolean
   showCampaign?: boolean
 }) {
@@ -349,6 +580,7 @@ function ActionRow({
         onResolve={onResolve}
         onOpen={onOpen}
         onInspect={onInspect}
+        onLinkDestination={onLinkDestination}
         resolving={resolving}
       />
     </div>
@@ -433,6 +665,7 @@ function ActionsTab({
   resolvingIds,
   onResolve,
   onOpen,
+  onLinkDestination,
   onFail,
   onSignOff,
   onDuplicate,
@@ -442,6 +675,11 @@ function ActionsTab({
   resolvingIds: Set<string>
   onResolve: (item: AttentionItem, action: string) => void
   onOpen: (campaignId: string, targetId?: string) => void
+  onLinkDestination: (
+    item: AttentionItem,
+    contentId: string,
+    field: string,
+  ) => void
   onFail: () => void
   onSignOff: () => void
   onDuplicate: () => void
@@ -473,6 +711,7 @@ function ActionsTab({
               onResolve={onResolve}
               onOpen={onOpen}
               onInspect={setProvenanceAssetId}
+              onLinkDestination={onLinkDestination}
               resolving={resolvingIds.has(item.id)}
             />
           ))}
@@ -516,14 +755,11 @@ function ActionsTab({
   return (
     <div className="actions-view">
       <div className="signed-off-actions">
-        <button className="primary-action-btn" onClick={onDuplicate}>
-          <IconCopy size={14} />
-          Duplicate
-        </button>
-        <button className="secondary-action-btn" onClick={onArchive}>
-          <IconArchive size={14} />
-          Archive
-        </button>
+        <CampaignActions
+          campaign={campaign}
+          onDuplicate={() => onDuplicate()}
+          onArchive={() => onArchive()}
+        />
       </div>
     </div>
   )
@@ -877,6 +1113,7 @@ function CampaignDetail({
   onClose,
   onResolve,
   onOpen,
+  onLinkDestination,
   onFailReview,
   onSignOff,
   onDuplicate,
@@ -887,6 +1124,11 @@ function CampaignDetail({
   onClose: () => void
   onResolve: (item: AttentionItem, action: string) => void
   onOpen: (campaignId: string, targetId?: string) => void
+  onLinkDestination: (
+    item: AttentionItem,
+    contentId: string,
+    field: string,
+  ) => void
   onFailReview: (campaignId: string, targetId: string, comment: string) => void
   onSignOff: (campaignId: string) => void
   onDuplicate: (campaign: Campaign) => void
@@ -956,6 +1198,7 @@ function CampaignDetail({
             resolvingIds={resolvingIds}
             onResolve={onResolve}
             onOpen={onOpen}
+            onLinkDestination={onLinkDestination}
             onFail={() => setShowFail(true)}
             onSignOff={() => onSignOff(campaign.id)}
             onDuplicate={() => onDuplicate(campaign)}
@@ -985,11 +1228,17 @@ function AttentionView({
   resolvingIds,
   onOpen,
   onResolve,
+  onLinkDestination,
 }: {
   campaigns: Campaign[]
   resolvingIds: Set<string>
   onOpen: (campaignId: string, targetId?: string) => void
   onResolve: (item: AttentionItem, action: string) => void
+  onLinkDestination: (
+    item: AttentionItem,
+    contentId: string,
+    field: string,
+  ) => void
 }) {
   const items = campaigns.flatMap((campaign) =>
     campaign.attention.map((item) => ({ item, campaign })),
@@ -1015,6 +1264,7 @@ function AttentionView({
             campaign={campaign}
             onResolve={onResolve}
             onOpen={onOpen}
+            onLinkDestination={onLinkDestination}
             resolving={resolvingIds.has(item.id)}
             showCampaign
           />
@@ -1028,7 +1278,7 @@ export default function CampaignProduction() {
   const [campaigns, setCampaigns] = useState<Campaign[]>(cloneSeed)
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [activeView, setActiveView] = useState<'Attention' | 'Campaigns'>(
-    'Campaigns',
+    'Attention',
   )
   const [resolvingIds, setResolvingIds] = useState<Set<string>>(new Set())
   const [archiveCampaign, setArchiveCampaign] = useState<Campaign | null>(null)
@@ -1105,6 +1355,63 @@ export default function CampaignProduction() {
     }, 360)
   }
 
+  const linkDestination = (
+    item: AttentionItem,
+    contentId: string,
+    field: string,
+  ) => {
+    if (!item.targetId) return
+
+    setResolvingIds((current) => new Set(current).add(item.id))
+
+    window.setTimeout(() => {
+      updateCampaign(item.campaignId, (campaign) => {
+        const assetId = item.targetId!
+        const content = campaign.content.find((entry) => entry.id === contentId)
+        if (!content) return campaign
+
+        const available = getUnpopulatedImageChoosers(content, campaign)
+        if (!available.includes(field)) return campaign
+
+        const assets = campaign.assets.map((asset) => {
+          if (asset.id !== assetId) return asset
+          return {
+            ...asset,
+            relationship: 'linked' as const,
+            linkedFrom: [...asset.linkedFrom, { contentId, field }],
+          }
+        })
+
+        const contentItems = campaign.content.map((entry) => {
+          if (entry.id !== contentId) return entry
+          if (entry.assetIds.includes(assetId)) return entry
+          return { ...entry, assetIds: [...entry.assetIds, assetId] }
+        })
+
+        const attention = campaign.attention.filter(
+          (attentionItem) => attentionItem.id !== item.id,
+        )
+
+        return {
+          ...campaign,
+          assets,
+          content: contentItems,
+          attention,
+          status:
+            attention.length === 0 ? 'needs_review' : campaign.status,
+          statusLabel:
+            attention.length === 0 ? 'Needs review' : campaign.statusLabel,
+        }
+      })
+
+      setResolvingIds((current) => {
+        const next = new Set(current)
+        next.delete(item.id)
+        return next
+      })
+    }, 360)
+  }
+
   const openCampaign = (campaignId: string) => {
     setSelectedId(campaignId)
     setActiveView('Campaigns')
@@ -1165,7 +1472,7 @@ export default function CampaignProduction() {
   const reset = () => {
     setCampaigns(cloneSeed())
     setSelectedId(null)
-    setActiveView('Campaigns')
+    setActiveView('Attention')
     setResolvingIds(new Set())
     setArchiveCampaign(null)
     setDuplicateCampaign(null)
@@ -1217,6 +1524,7 @@ export default function CampaignProduction() {
             resolvingIds={resolvingIds}
             onOpen={openCampaign}
             onResolve={resolve}
+            onLinkDestination={linkDestination}
           />
         ) : selected ? (
           <div className="split-view">
@@ -1231,6 +1539,7 @@ export default function CampaignProduction() {
               onClose={() => setSelectedId(null)}
               onResolve={resolve}
               onOpen={openCampaign}
+              onLinkDestination={linkDestination}
               onFailReview={failReview}
               onSignOff={signOff}
               onDuplicate={setDuplicateCampaign}
