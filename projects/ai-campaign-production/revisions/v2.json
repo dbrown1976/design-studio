@@ -1,0 +1,31 @@
+{
+  "id": "v2",
+  "name": "Candidate v2 — pending design brief",
+  "previousRevision": "v1",
+  "status": "candidate",
+  "fidelity": "hifi",
+  "summary": "Candidate revision established from accepted v1. Product amendment pending design brief.",
+  "scope": "No product or interaction changes yet. This record opens the sequential candidate so work can proceed without overwriting the accepted baseline.",
+  "preserve": [
+    "Full Campaigns table → select row → in-situ split view → inspect → close → restore full table.",
+    "Campaign Production remains a control layer and wayfinder over CMS, DAM and Jira rather than replacing those systems.",
+    "Attention states are actionable and resolving an item updates surrounding workflow state.",
+    "Human checkpoints remain visible around consequential or uncertain automated steps."
+  ],
+  "deployment": {
+    "productionUrl": "https://studio.danielbrown.design/ai-campaign-production",
+    "standaloneUrl": "https://ai-campaign-production.vercel.app/ai-campaign-production",
+    "previewUrl": null
+  },
+  "repository": {
+    "path": "apps/ai-campaign-production",
+    "branch": "candidate/ai-campaign-production-v2",
+    "commit": null,
+    "pullRequest": null
+  },
+  "validation": {
+    "status": "not-reviewed",
+    "notes": null
+  },
+  "acceptedAt": null
+}
