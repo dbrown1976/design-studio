@@ -44,3 +44,17 @@ same repository; Vercel is the deployment surface.
   Vercel are connected.
 - Merging to the production branch should produce the production deployment.
 - Each app is intended to be independently deployable from this monorepo.
+
+## Project workspace model
+
+Projects live under `projects/<project-id>/`.
+
+- `project.json` identifies exactly one `currentRevision`.
+- Sequential revisions live under `revisions/`.
+- Divergent exploration sets live under `explorations/`.
+- Creating a candidate must never overwrite the current revision.
+- Promoting a candidate to current is explicit; the previous current becomes superseded.
+- Exploration sets branch from a named accepted revision. Their directions are alternatives, not current versions.
+- A selected exploration direction must become a candidate revision before it can become current.
+
+Before changing a project, read its project record and current revision in addition to the prototype and shared context.

@@ -1,0 +1,49 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studio.danielbrown.design/schemas/revision.schema.json",
+  "title": "Design Studio revision",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "previousRevision", "status", "fidelity", "summary", "scope", "preserve", "deployment", "repository", "validation", "acceptedAt"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "previousRevision": { "type": ["string", "null"], "pattern": "^v[1-9][0-9]*$" },
+    "status": { "enum": ["candidate", "current", "superseded", "archived"] },
+    "fidelity": { "enum": ["baseline", "exploration", "hifi"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "scope": { "type": "string", "minLength": 1 },
+    "preserve": { "type": "array", "items": { "type": "string" } },
+    "deployment": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["productionUrl", "previewUrl", "standaloneUrl"],
+      "properties": {
+        "productionUrl": { "type": ["string", "null"] },
+        "previewUrl": { "type": ["string", "null"] },
+        "standaloneUrl": { "type": ["string", "null"] }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "additionalProperties": true,
+      "required": ["path", "branch", "commit", "pullRequest"],
+      "properties": {
+        "path": { "type": "string" },
+        "branch": { "type": ["string", "null"] },
+        "commit": { "type": ["string", "null"] },
+        "pullRequest": { "type": ["string", "null"] }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["status", "notes"],
+      "properties": {
+        "status": { "enum": ["not-reviewed", "in-review", "accepted", "rejected"] },
+        "notes": { "type": ["string", "null"] }
+      }
+    },
+    "acceptedAt": { "type": ["string", "null"], "format": "date" }
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studio.danielbrown.design/schemas/exploration-set.schema.json",
+  "title": "Design Studio exploration set",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "name", "basedOnRevision", "status", "question", "brief", "directions", "selectedDirectionId", "createdAt", "updatedAt"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "name": { "type": "string", "minLength": 1 },
+    "basedOnRevision": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+    "status": { "enum": ["open", "selected", "archived"] },
+    "question": { "type": "string", "minLength": 1 },
+    "brief": { "type": "string", "minLength": 1 },
+    "directions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["id", "name", "status", "summary", "appPath", "deploymentUrl", "notes"],
+        "properties": {
+          "id": { "type": "string" },
+          "name": { "type": "string" },
+          "status": { "enum": ["draft", "ready", "selected", "rejected", "archived"] },
+          "summary": { "type": ["string", "null"] },
+          "appPath": { "type": ["string", "null"] },
+          "deploymentUrl": { "type": ["string", "null"] },
+          "notes": { "type": "array", "items": { "type": "string" } }
+        }
+      }
+    },
+    "selectedDirectionId": { "type": ["string", "null"] },
+    "createdAt": { "type": "string", "format": "date" },
+    "updatedAt": { "type": "string", "format": "date" }
+  }
+}

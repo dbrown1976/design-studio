@@ -1,0 +1,9 @@
+{
+  "id": "ai-campaign-production",
+  "title": "AI Campaign Production",
+  "prototypeSlug": "ai-campaign-production",
+  "description": "AI-assisted campaign production across CMS, DAM and Jira workflows.",
+  "currentRevision": "v1",
+  "productionPath": "/ai-campaign-production",
+  "updated": "2026-09-23"
+}

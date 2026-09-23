@@ -1,0 +1,17 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://studio.danielbrown.design/schemas/project.schema.json",
+  "title": "Design Studio project",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["id", "title", "prototypeSlug", "description", "currentRevision", "productionPath", "updated"],
+  "properties": {
+    "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "title": { "type": "string", "minLength": 1 },
+    "prototypeSlug": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
+    "description": { "type": "string", "minLength": 1 },
+    "currentRevision": { "type": "string", "pattern": "^v[1-9][0-9]*$" },
+    "productionPath": { "type": "string", "pattern": "^/" },
+    "updated": { "type": "string", "format": "date" }
+  }
+}

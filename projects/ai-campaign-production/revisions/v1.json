@@ -1,0 +1,36 @@
+{
+  "id": "v1",
+  "name": "Stable Campaign Production baseline",
+  "previousRevision": null,
+  "status": "current",
+  "fidelity": "hifi",
+  "summary": "Imported the stable V0/Cursor Campaign Production prototype into Design Studio as the accepted baseline.",
+  "scope": "Initial accepted baseline. No product or interaction redesign was introduced during the Studio import.",
+  "preserve": [
+    "Full Campaigns table → select row → in-situ split view → inspect → close → restore full table.",
+    "Campaign Production remains a control layer and wayfinder over CMS, DAM and Jira rather than replacing those systems.",
+    "Attention states are actionable and resolving an item updates surrounding workflow state.",
+    "Human checkpoints remain visible around consequential or uncertain automated steps."
+  ],
+  "deployment": {
+    "productionUrl": "https://studio.danielbrown.design/ai-campaign-production",
+    "standaloneUrl": "https://ai-campaign-production.vercel.app/ai-campaign-production",
+    "previewUrl": null
+  },
+  "repository": {
+    "path": "apps/ai-campaign-production",
+    "branch": "main",
+    "commit": "ed77f17ee5aad49303c67a44c2653653e9e45b0d",
+    "pullRequest": null,
+    "importedFrom": {
+      "repository": "dbrown1976/automating-campaign-production",
+      "branch": "v0/campaign-production-shell",
+      "commit": "efd741cfd65dbeb2e4dd82ddd9dc67ac3997f673"
+    }
+  },
+  "validation": {
+    "status": "accepted",
+    "notes": "Stable imported baseline verified through its independent Vercel deployment and Studio route."
+  },
+  "acceptedAt": "2026-09-23"
+}

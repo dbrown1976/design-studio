@@ -4,7 +4,7 @@ const fidelityLabel = {
   hifi: "High fidelity"
 };
 
-export default function PrototypeCard({ prototype, onOpen }) {
+export default function PrototypeCard({ prototype, onOpen, hasWorkspace }) {
   return (
     <article className="prototype-card">
       <div className="prototype-card__topline">
@@ -21,10 +21,8 @@ export default function PrototypeCard({ prototype, onOpen }) {
         {(prototype.tags || []).map((tag) => <span key={tag}>{tag}</span>)}
       </div>
       <div className="prototype-card__actions">
-        {prototype.live && (
-          <a href={prototype.productionPath} target="_blank" rel="noreferrer">Open prototype</a>
-        )}
-        <button onClick={() => onOpen(prototype.slug)}>Inspect</button>
+        {prototype.live && <a href={prototype.productionPath} target="_blank" rel="noreferrer">Open prototype</a>}
+        <button onClick={() => onOpen(prototype.slug)}>{hasWorkspace ? "Open workspace" : "Inspect"}</button>
       </div>
     </article>
   );

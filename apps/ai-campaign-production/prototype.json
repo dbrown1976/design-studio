@@ -3,7 +3,7 @@
   "title": "AI Campaign Production",
   "description": "Executable AI-assisted campaign-production prototype coordinating structured content and assets across CMS, DAM and Jira workflows.",
   "question": "How might AI coordinate campaign production while keeping exceptions, status and consequential human decisions visible?",
-  "status": "exploring",
+  "status": "current",
   "fidelity": "hifi",
   "updated": "2026-09-23",
   "productionPath": "/ai-campaign-production",
