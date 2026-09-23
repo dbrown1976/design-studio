@@ -21,8 +21,8 @@
   "repository": {
     "path": "apps/ai-campaign-production",
     "branch": "candidate/ai-campaign-production-v3",
-    "commit": null,
-    "pullRequest": null
+    "pullRequest": null,
+    "commit": "a9aa359534adc8159a146dc11133e81479088b4a"
   },
   "validation": {
     "status": "accepted",
