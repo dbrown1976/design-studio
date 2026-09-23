@@ -1,22 +1,41 @@
 {
   "slug": "ai-campaign-production",
   "title": "AI Campaign Production",
-  "description": "Integration slot for the current V0 prototype: an AI-assisted campaign workflow coordinating structured content and assets across CMS and DAM.",
+  "description": "Executable AI-assisted campaign-production prototype coordinating structured content and assets across CMS, DAM and Jira workflows.",
   "question": "How might AI coordinate campaign production while keeping exceptions, status and consequential human decisions visible?",
   "status": "exploring",
   "fidelity": "hifi",
-  "updated": "2026-09-20",
+  "updated": "2026-09-23",
   "productionPath": "/ai-campaign-production",
-  "tags": ["AI workflows", "CMS", "DAM", "human control"],
-  "principles": ["context/design-principles.md", "context/interaction-rules.md"],
+  "tags": [
+    "AI workflows",
+    "CMS",
+    "DAM",
+    "human control"
+  ],
+  "principles": [
+    "context/design-principles.md",
+    "context/interaction-rules.md",
+    "apps/ai-campaign-production/docs/PRODUCT-CONTRACT.md",
+    "apps/ai-campaign-production/docs/DESIGN-SYSTEM.md"
+  ],
   "blueprints": [],
+  "source": {
+    "repository": "dbrown1976/automating-campaign-production",
+    "ref": "v0/campaign-production-shell",
+    "commit": "efd741cfd65dbeb2e4dd82ddd9dc67ac3997f673"
+  },
   "handoff": {
     "dontMiss": [
+      "Preserve the full Campaigns table → select row → in-situ split view → inspect → close → restore table interaction.",
       "Items requiring attention should be visually prominent and actionable.",
-      "Actions that resolve a blocker should update counts/state and acknowledge success.",
-      "Open-in-CMS and Open-in-DAM actions should use consistent treatment when they play the same workflow role.",
+      "Actions that resolve a blocker should update surrounding workflow state and acknowledge success.",
+      "Campaign Production remains a control layer and wayfinder; detailed content and asset editing stays in CMS and DAM.",
       "Human checkpoints remain visible around consequential or uncertain automated steps."
     ],
-    "ignore": ["This placeholder UI: replace it with the existing V0 implementation when the repo is connected."]
+    "ignore": [
+      "Do not turn the prototype into a replacement CMS, DAM, or AI chatbot.",
+      "Do not replace the in-situ campaign detail interaction with route-based detail pages unless explicitly requested."
+    ]
   }
 }

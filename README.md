@@ -23,9 +23,7 @@ every project.
 
 - `apps/studio/` — the Studio index. It discovers prototype manifests and shows
   their status, fidelity, intended URL, design question and handoff intent.
-- `apps/ai-campaign-production/` — the prepared home for the current V0 campaign
-  prototype. It is deliberately a placeholder until the existing V0 code is
-  imported, rather than a fake reconstruction.
+- `apps/ai-campaign-production/` — the imported executable Campaign Production prototype, preserved from the stable V0/Cursor baseline and configured to run at `/ai-campaign-production`.
 - `apps/needs-remediation-reference/` — the original POC idea preserved as an
   executable reference: baseline → divergent explorations → HiFi.
 - `context/` — durable design principles, interaction rules, visual guidance and

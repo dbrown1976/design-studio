@@ -44,3 +44,36 @@ V0 or Codex -> feature branch -> Vercel Preview -> review -> merge -> Production
 ```
 
 No custom GitHub Action is required for the standard flow.
+
+
+## AI Campaign Production
+
+`apps/ai-campaign-production` is an imported Next.js application rather than a
+Vite placeholder.
+
+Create its Vercel project with:
+
+- **Root Directory:** `apps/ai-campaign-production`
+- **Framework:** Next.js (auto-detected)
+- **Build command:** default
+- **Environment variables:** none currently required
+
+The app deliberately sets:
+
+```js
+basePath: "/ai-campaign-production"
+```
+
+in `next.config.mjs`. This keeps Next.js page and asset URLs scoped beneath the
+prototype slug so the independently deployed app can later be proxied through:
+
+```text
+studio.danielbrown.design/ai-campaign-production
+```
+
+When checking the standalone Vercel deployment, open the deployment URL with
+`/ai-campaign-production` appended. The bare deployment root is not the canonical
+prototype route.
+
+Do not remove the base path merely to make the temporary `.vercel.app` root
+prettier; the stable Studio path is the intended public contract.
