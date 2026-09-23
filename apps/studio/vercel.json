@@ -2,6 +2,10 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     {
+      "source": "/ai-campaign-production",
+      "destination": "https://ai-campaign-production.vercel.app/ai-campaign-production"
+    },
+    {
       "source": "/ai-campaign-production/:path*",
       "destination": "https://ai-campaign-production.vercel.app/ai-campaign-production/:path*"
     },
